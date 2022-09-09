@@ -1,0 +1,34 @@
+#!/bin/bash
+
+DIR=/cemcofsw/em/scipion/zart
+
+# clean
+rm -rf $DIR/*
+
+(
+    # modules
+    module add cuda/10.2
+    module add openmpi/4.1.2/m64-deb10/para
+    module add jdk/18.0.2
+
+    # install miniconda and activate environment
+    ./Miniconda3-py39_4.9.2-Linux-x86_64.sh -p $DIR/conda -b -s
+    eval "$($DIR/conda/bin/conda shell.bash hook)"
+
+    # setup conda environment
+    conda update -y -n base conda
+    conda install -y -c conda-forge pip
+
+    # scipion
+    pip3 install scipion-installer
+
+    export CXXFLAGS=-std=c++17
+    python3 -m scipioninstaller -conda -noAsk -dev -httpsClone -j 4 $DIR
+) 2>&1 | tee install-scipion-xmipp.log
+
+(
+    cd $DIR
+    if [[ ! -f scipion ]]; then
+        ln -s scipion3 scipion
+    fi
+)

@@ -1,0 +1,35 @@
+#!/bin/bash
+
+DIR=/cemcofsw/em/scipion/zart
+
+# Switch branches
+(
+    echo ">>> $DIR/xmipp-bundle"
+    cd $DIR/xmipp-bundle
+    git checkout dh_newZernike3DPrograms 
+    git pull
+
+    echo ">>> $DIR/xmipp-bundle/src/xmippCore"
+    cd $DIR/xmipp-bundle/src/xmippCore
+    git checkout dh_newZernike3DPrograms
+    git pull
+
+    echo ">>> $DIR/xmipp-bundle/src/scipion-em-xmipp"
+    cd $DIR/xmipp-bundle/src/scipion-em-xmipp
+    git checkout dh_reconstructZART
+    git pull
+)
+
+# Recompile
+module add openmpi/4.1.2/m64-deb10/para
+module add cuda/10.2
+module add jdk/18.0.2
+
+(
+    cd $DIR/xmipp-bundle
+
+    export CXXFLAGS=-std=c++17
+
+    ../scipion3 run ./xmipp config noAsk
+    ../scipion3 run ./xmipp compileAndInstall 4
+) 2>&1 | tee install-xmipp-zernike.log

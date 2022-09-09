@@ -1,0 +1,21 @@
+#!/bin/bash
+
+DIR=/cemcofsw/em/scipion/zart
+
+rm -rf $DIR/scipion-em-relion
+rm -rf $DIR/software/em/relion-3.1
+rm -rf $DIR/software/em/relion-4.0
+
+(
+    source $DIR/xmipp-bundle/build/xmipp.bashrc
+    module add cuda/11.6.1
+    module add openmpi/4.1.2/m64-deb10
+
+    cd $DIR
+
+    git clone https://github.com/scipion-em/scipion-em-relion.git
+
+    cd scipion-em-relion
+
+    ../scipion3 install -p $DIR/scipion-em-relion --devel
+) 2>&1 | tee install-relion.log

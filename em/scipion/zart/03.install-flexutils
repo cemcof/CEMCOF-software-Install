@@ -1,0 +1,29 @@
+#!/bin/bash
+
+DIR=/cemcofsw/em/scipion/zart
+
+rm -rf $DIR/scipion-em-flexutils
+
+(
+    cd $DIR
+    git clone https://github.com/scipion-em/scipion-em-flexutils
+)
+
+if [[ -d "${DIR}/software/em/flexutils-3.0.1" ]]; then
+    rm -rf "${DIR}/software/em/flexutils-3.0.1"
+fi
+   
+(
+    eval "$($DIR/conda/bin/conda shell.bash hook)"
+
+    source $DIR/xmipp-bundle/build/xmipp.bashrc
+
+    $DIR/scipion3 installp -p ${DIR}/scipion-em-flexutils --devel
+
+    conda activate flexutils
+    pip install mayavi # flexutils installs mayavi version with broken wheel
+
+    conda install -c anaconda cudatoolkit -y
+    conda install -c conda-forge cudatoolkit-dev -y
+    pip install farneback3d==0.1.3
+) 2>&1 | tee install-flexutils.log
