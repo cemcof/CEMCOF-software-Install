@@ -1,0 +1,6 @@
+
+> https://gitlab.tudelft.nl/aj-lab/locscale
+
+> module add build-toolchains/1.0/noarch/single
+> start-debian-10
+
