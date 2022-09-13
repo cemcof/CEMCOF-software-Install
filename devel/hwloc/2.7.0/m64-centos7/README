@@ -1,0 +1,7 @@
+
+
+$ start-centos-7
+> ./configure --prefix=/cemcofsw/devel/hwloc/2.7.0/m64-centos7/single | tee configure.log
+> make | tee make.log
+> make install | tee install.log
+

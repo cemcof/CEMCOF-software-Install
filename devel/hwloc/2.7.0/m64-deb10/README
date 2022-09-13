@@ -1,0 +1,8 @@
+
+
+$ module add build-toolchains
+$ start-debian-10
+> ./configure --prefix=/cemcofsw/devel/hwloc/2.7.0/m64-deb10/single 2>&1 | tee configure.log
+> make 2>&1 | tee make.log
+> make install 2>&1 | tee install.log
+
