@@ -1,0 +1,4 @@
+> tar xvf phenix-installer-1.20.1-4487-intel-linux-2.6-x86_64-centos6.tar.gz
+
+module add build-toolchains
+start-debian-10
