@@ -1,0 +1,4 @@
+> tar xvf ccp4-8.0.001-shelx-arpwarp-linux64.tar.gz
+
+module add build-toolchains
+start-ubuntu-20.04
