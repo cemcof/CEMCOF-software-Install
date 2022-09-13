@@ -1,0 +1,5 @@
+#!/bin/bash
+
+/cemcofsw/bioinf/jalview/2.11.2/m64-deb10/single/java/bin/java \
+    -jar /cemcofsw/bioinf/jalview/2.11.2/m64-deb10/single/libexec/jalview-all-2.11.2.0-j1.8.jar "$@"
+

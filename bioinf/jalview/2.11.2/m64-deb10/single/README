@@ -1,0 +1,15 @@
+
+wget wget http://www.jalview.org/getdown/release/jalview-all-2.11.2.0-j1.8.jar
+
+DIR=/cemcofsw/bioinf/jalview/2.11.2/m64-deb10/single/
+
+mkdir -p $DIR/libexec $DIR/bin $DIR/java
+cp -a jalview.tmp $DIR/bin
+
+rm -rf $DIR/libexec/*
+cp jalview-all-2.11.2.0-j1.8.jar $DIR/libexec
+
+rm -rf $DIR/java/*
+tar -xvf jre-8u321-linux-x64.tar.gz
+cp -r jre1.8.0_321/* $DIR/java/
+
