@@ -1,0 +1,5 @@
+wget https://github.com/turonova/Fourier3D/archive/refs/tags/v1.0.tar.gz
+tar xvf v1.0.tar.gz
+
+module add build-toolchains
+start-debian-10
