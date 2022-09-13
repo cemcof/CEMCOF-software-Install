@@ -1,0 +1,9 @@
+
+DIR=/cemcofsw/bioinf/figtree/1.4.4_220330/m64-deb10/single
+
+git clone https://github.com/rambaut/figtree
+
+module add build-toolchains
+stard-debian-10
+
+# prepare bash wrapper, that runs included java, into $DIR/bin
