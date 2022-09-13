@@ -1,0 +1,7 @@
+
+wget https://github.com/wwood/OrfM/releases/download/v0.7.1/orfm-0.7.1.tar.gz
+
+tar xvf orfm-0.7.1.tar.gz
+
+module add build-toolchains
+start-debian-10
