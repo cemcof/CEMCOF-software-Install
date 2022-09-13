@@ -1,0 +1,7 @@
+wget https://files.pythonhosted.org/packages/05/87/08b198f603d550c313fb1933cee602a7247e36cb7ae9ecf4b1678ecb941a/janni-0.2.2.tar.gz
+
+module add build-toolchains
+start-debian-10
+
+* write bash wrapper into bin
+* copy pretrained model
