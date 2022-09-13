@@ -1,0 +1,7 @@
+#!/bin/bash
+    export LD_LIBRARY_PATH=/cemcofsw/bioinf/mega/11.0.11/x86_64/single/lib/mega:$LD_LIBRARY_PATH
+    export LD_LIBRARY_PATH=/cemcofsw/bioinf/mega/11.0.11/x86_64/single/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
+
+    /cemcofsw/bioinf/mega/11.0.11/x86_64/single/lib/mega/mega
+
+    exit 0
