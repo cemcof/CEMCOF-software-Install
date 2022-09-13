@@ -1,0 +1,5 @@
+
+
+wget https://github.com/soedinglab/hh-suite/archive/refs/tags/v3.3.0.tar.gz
+tar -xvf v3.3.0.tar.gz
+
