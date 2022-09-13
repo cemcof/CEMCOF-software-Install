@@ -1,0 +1,7 @@
+#!/bin/bash
+
+git clone https://github.com/inab/trimal.git
+
+# module add build-toolchains
+# start-debian-10
+
