@@ -1,0 +1,26 @@
+
+if [[ ! -f ugene-42.0-linux-x86-64.tar.gz ]]; then
+    wget https://github.com/ugeneunipro/ugene/releases/download/42.0/ugene-42.0-linux-x86-64.tar.gz
+fi
+
+tar xvf ugene-42.0-linux-x86-64.tar.gz
+
+DIR=/cemcofsw/bioinf/ugene/42.0/x86_64/single
+
+mkdir -p $DIR
+
+rm -rf $DIR/libexec
+mkdir -p $DIR/libexec
+cp -r ugene-42.0/* $DIR/libexec
+
+mkdir -p $DIR/bin
+
+(
+    cd $DIR/bin
+    ln -s ../libexec/ugene
+    ln -s ../libexec/ugenecl
+    ln -s ../libexec/ugenem
+    ln -s ../libexec/ugeneui
+    ln -s ../libexec/plugins_checker
+)
+
