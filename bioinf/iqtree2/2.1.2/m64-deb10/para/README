@@ -1,0 +1,5 @@
+
+
+wget https://github.com/iqtree/iqtree2/archive/refs/tags/v2.1.2.tar.gz
+tar -xvf v2.1.2.tar.gz
+
