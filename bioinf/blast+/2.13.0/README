@@ -1,0 +1,6 @@
+
+
+wget https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.13.0+-src.tar.gz
+tar -xvf ncbi-blast-2.13.0+-src.tar.gz
+module add build-toolchains
+start-debian-10
