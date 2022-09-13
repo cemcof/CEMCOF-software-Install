@@ -1,0 +1,11 @@
+#!/bin/bash
+
+wget https://mafft.cbrc.jp/alignment/software/mafft-7.490-with-extensions-src.tgz
+tar xvf mafft-7.490-with-extensions-src.tgz
+
+echo "Edit PREFIX: ./mafft-7.490-with-extensions/extensions/core/Makefile"
+echo "Edit PREFIX: ./mafft-7.490-with-extensions/extensions/Makefile"
+
+module add build-toolchains
+start-debian-10
+
