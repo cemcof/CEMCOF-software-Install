@@ -1,0 +1,7 @@
+git clone https://github.com/zhonge/cryodrgn.git
+
+cd cryodrgn
+git checkout -b 1.1.0
+
+module add build-toolchains
+start-debian-10
