@@ -1,0 +1,18 @@
+
+git clone https://github.com/fuzikt/relion.git
+cd relion/
+git checkout -b origin/ver3.1locsearch
+
+# git pull for new code
+
+# edit relion/CMakeLists.txt with:
+# 1.)
+# set(MPI_CXX_INCLUDE_DIRS $ENV{MPI_HOME}) # ID
+# find_package(MPI REQUIRED) does not set this variable correctly
+#
+# 2.)
+# -DARCH_CUDA handling, to accept:
+# -DCUDA_ARCH="--gpu-architecture=compute_50 --gpu-code=compute_50,sm_75,sm_86"
+
+module add build-toolchains
+start-debian-10
