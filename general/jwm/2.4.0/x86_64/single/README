@@ -1,0 +1,16 @@
+$ tar -xvf jwm-2.4.0.tar.xz
+$ cd jwm-2.4.0
+$ start-centos-7
+
+> ./configure --prefix=/cemcofsw/general/jwm/2.4.0/x86_64/single --exec-prefix=/cemcofsw/general/jwm/2.4.0/x86_64/single
+> make
+> make install
+> ldd /cemcofsw/general/jwm/2.4.0/x86_64/single/bin/jwm # check libraries
+> exit
+
+$ ldd /cemcofsw/general/jwm/2.4.0/x86_64/single/bin/jwm # check missing libraries
+$ start-centos-7
+
+> cp /lib64/libpng15.so.15 /cemcofsw/general/jwm/2.4.0/x86_64/single/lib # copy missing libraries and change rpath
+> /software/ncbr/softrepo/common/patchelf/0.9/x86_64/single/bin/patchelf --set-rpath /cemcofsw/general/jwm/2.4.0/x86_64/single/lib /cemcofsw/general/jwm/2.4.0/x86_64/single/bin/jwm
+> exit
