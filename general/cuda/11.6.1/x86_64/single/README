@@ -1,0 +1,2 @@
+$ chmod +x cuda_11.6.1_510.47.03_linux.run
+$ ./cuda_11.6.1_510.47.03_linux.run --silent --toolkit --toolkitpath=/cemcofsw/general/cuda/11.6.1/x86_64/single
