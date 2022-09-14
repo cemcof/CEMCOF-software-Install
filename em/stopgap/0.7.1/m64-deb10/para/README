@@ -1,0 +1,7 @@
+Edit compilation directory to /home/durnik/Software/em/stopgap/0.7.1/m64-deb10/para/STOPGAP-0.7.1/compiled_2021a in files:
+src/stopgap/compile_stopgap.m
+src/stopgap/compile_watcher.m
+src/stopgap/compile_parser.m
+
+run src/stopgap_source.m from matlab
+run src/stopgap/compile_all.m from matlab
