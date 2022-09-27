@@ -1,0 +1,4 @@
+
+> wget https://cryoem.bcm.edu/cryoem/static/software/continuous_build/eman2_sphire_sparx_huge.linux.unstable.sh 
+> module add build-toolchains/1.0/noarch/single
+> start-debian-10
