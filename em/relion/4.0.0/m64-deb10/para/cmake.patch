@@ -1,0 +1,29 @@
+--- 4.0.0/m64-deb10/para/relion-4.0.0/CMakeLists.txt	2022-09-28 03:20:54.000000000 +0200
++++ 4.0_220321/m64-deb10/para/relion/CMakeLists.txt	2022-05-13 12:30:57.430028275 +0200
+@@ -77,9 +77,10 @@
+     set(CUDARCH "-arch=sm_50")
+ else(NOT DEFINED CUDA_ARCH)
+     message(STATUS "Using provided CUDA_ARCH=${CUDA_ARCH}")
+-    set(CUDARCH "-arch=sm_${CUDA_ARCH}")
++    #set(CUDARCH "-arch=sm_${CUDA_ARCH}")
++    set(CUDARCH "${CUDA_ARCH}")
+ endif(NOT DEFINED CUDA_ARCH)
+-    
++
+ # -------------------------------------------------------------------FURTHER OPTIONS--
+ 
+ 
+@@ -212,10 +213,10 @@
+ # -------------------------------------------------------------------------------MPI--
+ find_package(MPI REQUIRED)
+ 
++set(MPI_CXX_INCLUDE_DIRS $ENV{MPI_HOME}) # ID
++
+ if ("${MPI_CXX_INCLUDE_DIRS}" STREQUAL "")
+-	if (NOT "${MPI_CXX_INCLUDE_PATH}" STREQUAL "")
+-		include_directories("${MPI_CXX_INCLUDE_PATH}")
+-	endif()
++	include_directories("${MPI_CXX_INCLUDE_PATH}")
+ else()
+ 	include_directories("${MPI_CXX_INCLUDE_DIRS}")
+ endif()

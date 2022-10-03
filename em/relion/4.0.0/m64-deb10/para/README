@@ -1,0 +1,16 @@
+
+> wget https://github.com/3dem/relion/archive/refs/tags/4.0.0.tar.gz
+> tar xvf 4.0.0.tar.gz
+
+# edit relion/CMakeLists.txt with:
+# 1.)
+# set(MPI_CXX_INCLUDE_DIRS $ENV{MPI_HOME}) # ID
+# find_package(MPI REQUIRED) does not set this variable correctly
+#
+# 2.)
+# -DARCH_CUDA handling, to accept:
+# -DCUDA_ARCH="--gpu-architecture=compute_50 --gpu-code=compute_50,sm_75,sm_86"
+# -> cmake.patch
+
+> module add build-toolchains
+> start-debian-10
