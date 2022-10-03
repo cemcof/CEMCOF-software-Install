@@ -1,0 +1,6 @@
+
+> wget https://ffmpeg.org/releases/ffmpeg-5.1.2.tar.xz
+> tar xvf ffmpeg-5.1.2.tar.xz
+
+> module add build-toolchains/1.0/noarch/single
+> start-debian-10
