@@ -1,0 +1,8 @@
+#!/bin/bash
+
+DIR=/cemcofsw/em/pytom/1.0/x86_64/node
+eval "$($DIR/conda/bin/conda shell.bash hook)"
+conda activate pytom_env
+
+pytomGUI "$@"
+

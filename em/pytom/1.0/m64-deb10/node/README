@@ -1,0 +1,7 @@
+
+> git clone https://github.com/FridoF/PyTom pytom
+> cd pytom
+> git checkout tags/1.0 -b 1.0
+> git pull
+> git checkout tags/v1.0a -b 1.0a
+
