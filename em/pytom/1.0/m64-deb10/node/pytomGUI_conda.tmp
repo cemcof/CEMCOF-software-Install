@@ -1,0 +1,8 @@
+# !/bin/bash
+
+if [[ -z CONDA_PREFIX ]]; then
+    echo "Must be run in correct conda environment!"
+    exit 1
+fi
+
+python3.8 $CONDA_PREFIX/lib/python3.8/site-packages/pytom/gui/pytomGUI.py $1

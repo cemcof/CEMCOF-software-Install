@@ -59,3 +59,29 @@ rm -rf $DIR/*
     done
 ) 2>&1 | tee pytom_wrappers.log
 
+# pytom hot fixes
+(
+    eval "$($DIR/conda/bin/conda shell.bash hook)"
+
+    conda activate pytom_env
+
+    # own pytom run scripts
+    cp -av pytom_conda.tmp $CONDA_PREFIX/lib/python3.8/site-packages/pytom/bin/pytom
+    cp -av pytom_conda.tmp $CONDA_PREFIX/bin/pytom
+
+    cp -av ipytom_conda.tmp $CONDA_PREFIX/lib/python3.8/site-packages/pytom/bin/ipytom
+    cp -av ipytom_conda.tmp $CONDA_PREFIX/bin/ipytom
+
+    cp -av pytomGUI_conda.tmp $CONDA_PREFIX/lib/python3.8/site-packages/pytom/bin/pytomGUI
+    cp -av pytomGUI_conda.tmp $CONDA_PREFIX/bin/pytomGUI
+
+    # own paths.sh file
+    cp -av paths.sh.tmp $CONDA_PREFIX/bin/paths.sh
+    cp -av paths.sh.tmp $CONDA_PREFIX/lib/python3.8/site-packages/pytom/bin/paths.sh
+
+    # transport angleList into conda
+    cp -avr pytom/pytom/angles/angleLists $CONDA_PREFIX/lib/python3.8/site-packages/pytom/angles
+
+    # transport LICENSE.txt into conda
+    cp -av pytom/LICENSE.txt $CONDA_PREFIX/lib/python3.8/site-packages/pytom
+) 2>&1 | tee hot_fixes.log

@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+if [[ -z CONDA_PREFIX ]]; then
+    echo "Must be run in correct conda environment!"
+    exit 1
+fi
+
+cat $CONDA_PREFIX/lib/python3.8/site-packages/pytom/LICENSE.txt
+source $CONDA_PREFIX/lib/python3.8/site-packages/pytom/bin/paths.sh
+
+FID=0
+export PYTOM_GPU=-1
+
+for a in $*
+do
+    if [ $FID -eq 1 ]; then
+        FID=0
+        export PYTOM_GPU="$a"
+    fi
+
+    if [ "$a" = '-g' ] || [ "$a" = '--gpuID' ]; then
+        export PYTOM_GPU=1
+        FID=1
+    fi
+done
+
+python3.8 -O $*

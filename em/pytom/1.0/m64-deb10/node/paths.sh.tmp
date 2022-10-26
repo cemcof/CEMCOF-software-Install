@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+export LD_LIBRARY_PATH=/cemcofsw/em/pytom/1.0/m64-deb10/node/conda/envs/pytom_env/lib:$LD_LIBRARY_PATH
+export PATH=/cemcofsw/em/pytom/1.0/m64-deb10/node/conda/envs/pytom_env/bin:/cemcofsw/em/pytom/1.0/m64-deb10/node/conda/condabin:$PATH
