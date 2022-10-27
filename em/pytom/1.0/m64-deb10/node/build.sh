@@ -6,7 +6,7 @@ DIR=/cemcofsw/em/pytom/1.0/m64-deb10/node
 rm -rf $DIR/*
 
 # conda
-./Miniconda3-py39_4.9.2-Linux-x86_64.sh -p $DIR/conda -b -s 2>&1 | tee conda.log
+./Miniconda3-py38_4.10.3-Linux-x86_64.sh -p $DIR/conda -b -s 2>&1 | tee conda.log
 
 # pytom
 (
@@ -20,15 +20,6 @@ rm -rf $DIR/*
 
     python3.8 setup.py install --prefix $DIR/conda/envs/pytom_env
 ) 2>&1 | tee pytom.log
-
-# gnureadline - solves arrow key problems in python shell
-(
-    eval "$($DIR/conda/bin/conda shell.bash hook)"
-
-    conda activate pytom_env
-
-    pip install gnureadline
-) 2>&1 | tee gnureadline.log
 
 # Wrappers for pytom
 (
@@ -84,4 +75,7 @@ rm -rf $DIR/*
 
     # transport LICENSE.txt into conda
     cp -av pytom/LICENSE.txt $CONDA_PREFIX/lib/python3.8/site-packages/pytom
+
+    # transport pytomc into conda
+    cp -avr pytom/pytom/pytomc $CONDA_PREFIX/lib/python3.8/site-packages/pytom
 ) 2>&1 | tee hot_fixes.log
