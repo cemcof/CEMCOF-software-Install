@@ -1,0 +1,52 @@
+> alphafold.tmp needs to be edited to containt path to correct version
+
+> the patch should look something like:
+--- alphafold-2.2.4-orig/./alphafold/data/tools/hhblits.py	2022-11-03 15:48:01.745352903 +0100
++++ alphafold-2.2.4/./alphafold/data/tools/hhblits.py	2022-11-03 15:50:26.304178355 +0100
+@@ -35,7 +35,7 @@
+                *,
+                binary_path: str,
+                databases: Sequence[str],
+-               n_cpu: int = 4,
++               n_cpu: int = utils.NCPUS,
+                n_iter: int = 3,
+                e_value: float = 0.001,
+                maxseq: int = 1_000_000,
+--- alphafold-2.2.4-orig/./alphafold/data/tools/utils.py	2022-11-03 15:48:01.745352903 +0100
++++ alphafold-2.2.4/./alphafold/data/tools/utils.py	2022-11-03 15:50:56.961625889 +0100
+@@ -16,10 +16,12 @@
+ import shutil
+ import tempfile
+ import time
++import os
+ from typing import Optional
+ 
+ from absl import logging
+ 
++NCPUS  = int(os.environ.get('PBS_NCPUS', '1'))
+ 
+ @contextlib.contextmanager
+ def tmpdir_manager(base_dir: Optional[str] = None):
+--- alphafold-2.2.4-orig/./alphafold/data/tools/jackhmmer.py	2022-11-03 15:48:01.745352903 +0100
++++ alphafold-2.2.4/./alphafold/data/tools/jackhmmer.py	2022-11-04 10:40:22.704276618 +0100
+@@ -35,7 +35,7 @@
+                *,
+                binary_path: str,
+                database_path: str,
+-               n_cpu: int = 8,
++               n_cpu: int = utils.NCPUS,
+                n_iter: int = 1,
+                e_value: float = 0.0001,
+                z_value: Optional[int] = None,
+--- alphafold-2.2.4-orig/./alphafold/data/tools/hmmsearch.py	2022-11-03 15:48:01.745352903 +0100
++++ alphafold-2.2.4/./alphafold/data/tools/hmmsearch.py	2022-11-03 15:51:28.915134635 +0100
+@@ -89,7 +89,7 @@
+       cmd = [
+           self.binary_path,
+           '--noali',  # Don't include the alignment in stdout.
+-          '--cpu', '8'
++          '--cpu', str(utils.NCPUS)
+       ]
+       # If adding flags, we have to do so before the output and input:
+       if self.flags:
+

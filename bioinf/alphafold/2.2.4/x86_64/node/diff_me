@@ -1,0 +1,5 @@
+#!/bin/bash
+
+while read FILE; do
+    diff -Naur alphafold-2.2.4-orig/$FILE alphafold-2.2.4/$FILE
+done < <( cd alphafold-2.2.4-orig; find -name '*.py')

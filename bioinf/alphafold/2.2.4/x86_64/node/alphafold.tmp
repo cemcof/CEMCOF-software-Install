@@ -1,0 +1,216 @@
+#!/bin/bash
+# Description: AlphaFold non-docker version
+# Author: Sanjay Kumar Srikakulam
+# Tuned for NCBR by Petr Kulhanek
+# Retuned for CIISB by Ivo Durnik
+
+VER=2.2.4
+AF2_DIR=/cemcofsw/bioinf/alphafold/$VER/x86_64/node
+
+usage() {
+        echo ""
+        echo "Please make sure all required parameters are given"
+        echo "Usage: alphafold <OPTIONS>"
+        echo ""
+        echo "Required Parameters:"
+        echo " -f <fasta_file>      Single FASTA file containing one or more sequences"
+        echo ""
+        echo "Optional Parameters:"
+        echo " -m <model_preset>    Model preset: monomer (default), monomer_casp14, monomer_ptm, multimer"
+        echo " -d <db_preset>       Control MSA speed/quality tradeoff: reduced_dbs, full_dbs (default)"
+        echo " -t <max_temp_date>   Maximum template release date to consider (ISO-8601 format - i.e. YYYY-MM-DD)."
+        echo "                      Important if folding historical test sets. (defaults to: 2020-05-14)"
+        echo ""
+        echo "Other Alphafold Parameters:"
+        echo " --is_prokaryote_list=<value>  Specify \"true\" to determine whether all input sequences"
+        echo "                               in the given fasta file are prokaryotic."
+        echo ""
+        echo " -h                   Print this help"
+        echo ""
+        exit 1
+}
+
+while getopts ":f:m:d:t:h" i; do
+        case "${i}" in
+        f)
+                fasta_path=$OPTARG
+        ;;
+        m)
+                model_preset=$OPTARG
+        ;;
+        d)
+                db_preset=$OPTARG
+        ;;
+        t)
+                max_template_date=$OPTARG
+        ;;
+        h)
+                usage
+        ;;
+        esac
+done
+
+# remove processed options
+shift $((OPTIND-1))
+
+if [[ ! -z "$data_dir" ]]; then
+    MESSAGE="User specified database."
+else
+    if [[ -d /scratch/share/AF_db ]]; then
+        data_dir="/scratch/share/AF_db"
+        MESSAGE="Local database, performance should be optimal."
+    elif [[ -d /storage/brno14-ceitec/shared/cemcof/internal/DATA_21/AF_db ]]; then
+        data_dir="/storage/brno14-ceitec/shared/cemcof/internal/DATA_21/AF_db"
+        MESSAGE="Remote database, performance might suffer."
+    else
+        echo "Error!"
+        echo "data_dir variable with the database is not set!"
+        exit 1
+    fi
+fi
+
+if [[ "$output_dir" == "" ]]; then
+    output_dir=$(pwd)
+fi
+
+if ! [[ "$fasta_path" == *\/* ]]; then
+    fasta_path="$output_dir/$fasta_path"
+fi
+
+if ! [[ -f "$fasta_path" ]]; then
+    echo "Input FASTA file ($fasta_path) does not exist!"
+    usage
+fi
+    echo "> Input FASTA:  '$fasta_path'"
+
+if [[ "$model_preset" == "" ]]; then
+    model_preset="monomer"
+fi
+
+if [[ "$model_preset" != "monomer" && "$model_preset" != "monomer_casp14" && "$model_preset" != "monomer_ptm" && "$model_preset" != "multimer" ]] ; then
+    echo "Unknown model preset! Using default ('monomer')"
+    model_preset="monomer"
+fi
+
+    echo "> Model preset: '$model_preset'"
+
+if [[ "$db_preset" == "" ]] ; then
+    db_preset="full_dbs"
+fi
+
+if [[ "$db_preset" != "full_dbs" && "$db_preset" != "reduced_dbs" ]] ; then
+    echo "Unknown preset! Using default ('full_dbs')"
+    db_preset="full_dbs"
+fi
+
+    echo "> DB preset:    '$db_preset'"
+
+if [[ "$max_template_date" == "" ]]; then
+    max_template_date="2020-05-14"
+fi
+
+    echo "> Max date:     '$max_template_date'"
+
+# Parse input and set defaults
+if [[ "$data_dir" == "" || "$output_dir" == "" || "$model_preset" == "" || "$db_preset" == "" || "$fasta_path" == "" || "$max_template_date" == "" ]] ; then
+    usage
+fi
+
+# activate conda 
+eval "$($AF2_DIR/conda/bin/conda shell.bash hook)"
+conda activate alphafold
+
+# This bash script looks for the run_alphafold.py script in its current working directory, if it does not exist then exits
+#cd $AF2_DIR/alphafold-2.1.2
+
+alphafold_script="$AF2_DIR/alphafold-$VER/run_alphafold.py"
+
+if [ ! -f "$alphafold_script" ]; then
+    echo "Alphafold python script $alphafold_script does not exist."
+    exit 1
+fi
+
+# set CUDA devices for use
+export CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:--1}
+
+# TensorFlow control
+export TF_FORCE_UNIFIED_MEMORY='1'
+
+# JAX control
+export XLA_PYTHON_CLIENT_MEM_FRACTION="${XLA_PYTHON_CLIENT_MEM_FRACTION:-4.0}"
+
+export PBS_NCPUS=${PBS_NCPUS:-1}
+export PBS_NGPUS=${PBS_NGPUS:-0}
+
+# OpenMM threads control
+export OPENMM_CPU_THREADS=${INF_NCPUS:-1}
+
+echo ""
+echo "> Resources ..."
+echo "  NCPUs                          = $PBS_NCPUS"
+if [[ PBS_NGPUS -ne 0 ]]; then
+echo "  NGPUs                          = $PBS_NGPUS ($CUDA_VISIBLE_DEVICES)"
+export OPENMM_RELAX_PLATFORM="${OPENMM_RELAX_PLATFORM:-CUDA}"
+else
+echo "  NGPUs                          = $PBS_NGPUS"
+export OPENMM_RELAX_PLATFORM="${OPENMM_RELAX_PLATFORM:-CPU}"
+export CUDA_VISIBLE_DEVICES=-1
+fi
+echo "  XLA_PYTHON_CLIENT_MEM_FRACTION = $XLA_PYTHON_CLIENT_MEM_FRACTION"
+echo "  OPENMM_CPU_THREADS             = $OPENMM_CPU_THREADS"
+echo "  OPENMM_RELAX_PLATFORM          = $OPENMM_RELAX_PLATFORM"
+
+echo ""
+echo "> Alphafold DB: '$data_dir'"
+echo "> $MESSAGE"
+
+bfd_database_path="$data_dir/bfd/bfd_metaclust_clu_complete_id30_c90_final_seq.sorted_opt"
+small_bfd_database_path="$data_dir/small_bfd/bfd-first_non_consensus_sequences.fasta"
+mgnify_database_path="$data_dir/mgnify/mgy_clusters.fa"
+template_mmcif_dir="$data_dir/pdb_mmcif.2.1/mmcif_files"
+obsolete_pdbs_path="$data_dir/pdb_mmcif.2.1/obsolete.dat"
+pdb70_database_path="$data_dir/pdb70/pdb70"
+uniclust30_database_path="$data_dir/uniclust30/uniclust30_2018_08/uniclust30_2018_08"
+uniref90_database_path="$data_dir/uniref90/uniref90.fasta"
+pdb_seqres_database_path="$data_dir/pdb_seqres/pdb_seqres.txt"
+uniprot_database_path="$data_dir/uniprot/uniprot.fasta"
+
+# Run AlphaFold with required parameters
+case $db_preset in
+    "full_dbs")
+        opt_db="--bfd_database_path=$bfd_database_path --uniclust30_database_path=$uniclust30_database_path"
+        ;;
+    "reduced_dbs")
+        opt_db="--small_bfd_database_path=$small_bfd_database_path"
+        ;;
+esac
+
+case $model_preset in
+    "multimer")
+        opt_mod="--pdb_seqres_database_path=$pdb_seqres_database_path --uniprot_database_path=$uniprot_database_path"
+        ;;
+    *)
+        opt_mod="--pdb70_database_path=$pdb70_database_path"
+        ;;
+esac
+
+echo ""
+echo ">>>>>> Executing alphafold ..."
+echo "python $alphafold_script --fasta_paths=$fasta_path --output_dir=$output_dir\
+                         --model_preset=$model_preset --db_preset=$db_preset --max_template_date=$max_template_date --logtostderr \
+                         --use_gpu_relax=True \
+                         --data_dir=$data_dir $opt_db \
+                         --uniref90_database_path=$uniref90_database_path \
+                         --mgnify_database_path=$mgnify_database_path --template_mmcif_dir=$template_mmcif_dir --obsolete_pdbs_path=$obsolete_pdbs_path \
+                         $opt_mod" "$@" | awk '{ for(i=1; i <= 2; i++) printf("%s ",$i); printf("\n"); for(i=3;i<=NF;i++) printf("       %s\n",$i); }'
+
+echo ""
+python $alphafold_script --fasta_paths=$fasta_path --output_dir=$output_dir\
+                         --model_preset=$model_preset --db_preset=$db_preset --max_template_date=$max_template_date --logtostderr \
+                         --use_gpu_relax=True \
+                         --data_dir=$data_dir $opt_db \
+                         --uniref90_database_path=$uniref90_database_path \
+                         --mgnify_database_path=$mgnify_database_path --template_mmcif_dir=$template_mmcif_dir --obsolete_pdbs_path=$obsolete_pdbs_path \
+                         $opt_mod "$@"
+
+
