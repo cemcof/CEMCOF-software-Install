@@ -78,4 +78,7 @@ rm -rf $DIR/*
 
     # transport pytomc into conda
     cp -avr pytom/pytom/pytomc $CONDA_PREFIX/lib/python3.8/site-packages/pytom
+
+    # transport voltools kernels into conda
+    cp -rv pytom/pytom/voltools/kernels $CONDA_PREFIX/lib/python3.8/site-packages/pytom/voltools
 ) 2>&1 | tee hot_fixes.log
