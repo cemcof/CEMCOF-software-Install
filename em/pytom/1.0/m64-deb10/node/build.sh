@@ -48,6 +48,10 @@ rm -rf $DIR/*
             echo "Skipped: $PY"
         fi
     done
+
+    # mask mpiexec by module activation
+    # without including whole conda in PATH
+    cp -av mpiexec.tmp $DIR/bin/mpiexec
 ) 2>&1 | tee pytom_wrappers.log
 
 # pytom hot fixes
